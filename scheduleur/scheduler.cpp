@@ -34,7 +34,7 @@ int getIdHost(int lastHost) {
 }
 
 void connectHostUseSsh(int idHost,  const string &commandVM) {
-	string command = "ssh -f root@10.0.0."+convertInt(idHost)+" '"+commandVM+
+	string command = "ssh -f sge@10.0.0."+convertInt(idHost)+" '"+commandVM+
 "'";
 	cout <<command<<endl;
 	system(command.c_str());
