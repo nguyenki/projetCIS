@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Teste si c'est bien un fichier xml
+testXmlFile(){
+    fileName=$1;
+    if test ${fileName##*.} != "xml"; then
+	return 1
+    else
+	return 0
+    fi    
+}
+
+
+# Extraction de l'user
+xmlLookForUser(){
+
+    fileName=$1;
+
+    for name in user
+    do
+	out=`xmllint --xpath '//status/user/text()' $fileName`;
+    done
+    echo "$out";
+}
+
+###### Test
+nombre=$#;
+if [ ${nombre} = 0 ]; then
+    read -p "Veuillez saisir votre fichier xml : " fileName
+else
+    fileName="$1"
+fi
+
+resultat=`testXmlFile $reponse`;
+
+if [ ${resultat} = 0 ]; then
+    read -p "Veuillez saisir votre fichier xml : " reponse
+else
+    reponse="$1"
+fi
+
+xmlLookForUser $reponse

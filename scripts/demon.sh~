@@ -1,0 +1,37 @@
+ #!/bin/sh
+
+BASEDIR=`dirname $0`;
+Path=`dirname $0`;
+
+file_collector(){
+    Path=$Path"/testdemon";
+    # On efface tous les fichiers hors-norme
+    for i in "$Path/*"
+    do
+	if [ ${i#*.} = "tar.gz" ]; then
+	    echo "OK";
+	    echo "deplacement de $i"
+	    mv $i ${BASEDIR}"/enAttente/"
+	else
+	    echo "KO";
+	    echo "suppression de $i"
+	    rm -rf $i
+	fi    
+    done
+ }
+
+#daemon_files(){
+#    file=$1
+#    sec=$2
+#    while :
+#    do
+#    file_detector $file $sec;
+#    sleep 25;
+#    done
+# }
+
+
+
+###### Test
+#daemon_files "test/" "0,25"
+file_collector

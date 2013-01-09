@@ -1,0 +1,21 @@
+ #!/bin/sh
+# Teste si c'est bien un fichier xml
+daemonNotifiyer(){
+toWatch=$1;
+ while inotifywait -e modify ${toWatch}; do
+     if tail -n1 ${toWatch}; then
+         echo "New Event!"
+     fi
+ done  
+}
+
+
+###### Test
+nombre=$#;
+if test ${nombre} = 0 ; then
+    read -p "Veuillez saisir votre repertoire : " dirName
+else
+    dirName="$1"
+fi
+
+daemonNotifiyer;

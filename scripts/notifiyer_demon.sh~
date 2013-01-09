@@ -1,0 +1,52 @@
+ #!/bin/sh
+# Teste si c'est bien un fichier xml
+file_detector(){
+
+    number=`echo "scale=9;($1/60)" | bc`;
+        
+    
+    string=$number
+    echo "string=$string"	
+    length=${#string};
+    point=${string:0:1};
+    echo "point=$point"
+    echo "length=$length"
+    
+    if test ${point} == "." ; then
+	result="0,"
+	for ((i = 2; i -lt $length; i += 1))
+	do
+	    result=${result}${i}
+	done 
+    else
+	
+	result="";
+	i=0;
+
+	while [ $i -lt $lenght ]
+	do
+	    point=${number:$i};
+	    if test point="."; then
+		result=${result}","
+	    else
+		result=${result}${i}
+	    fi
+	    i+=1
+	done
+#	result_file=${path}"/"${file_name}
+    fi
+    echo "$result";
+}
+
+
+
+
+###### Test
+nombre=$#;
+if test ${nombre} = 0 ; then
+    read -p "Veuillez saisir votre nombre : " number
+else
+    number="$1"
+fi
+
+file_detector ${number};
