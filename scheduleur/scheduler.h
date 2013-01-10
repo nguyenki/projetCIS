@@ -9,13 +9,14 @@
 
 using namespace std;
 
-void connectHostUseSsh(int idHost, const string &username);
+void connectHostUseSsh(int idHost, const string &commandVM, const string &idJob, const string &userName);
 int parseParameter(int argc, char* argv[]);
 string getCurrentDirectory();
 vector<string> getAllArchivesName(const string &dirPath);
 void copyArchivesToDestinationTempFolder(const string &fileName, const string &location);
 void copyAllArchivesToDestination();
 string getIdJob(const string &fileName);
+string getUserName(const string &fileName);
 
 string convertInt(int number)
 {
