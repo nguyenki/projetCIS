@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 	return 1;
 }
 
-void connectHostUseSsh(int idHost,const string &commandVM, const string &idJob, const string &userName) {
+void connectHostUseSsh(int idHost, const string &commandVM, const string &idJob, const string &userName) {
 	string command = "ssh -f root@10.0.0."+convertInt(idHost)+" '"+commandVM+" "+idJob+" "+userName+
 "'";
 	cout <<command<<endl;
@@ -74,6 +74,7 @@ void copyAllArchivesToDestination() {
 
 void copyArchivesToDestinationTempFolder(const string &fileName, const string &location) {
 	idHost = randomHost(NUMBER_HOST);
+	idHost = 8;
 	hostJob.insert(std::pair<string,int>(getIdJob(fileName),idHost)); // Save the location of host where the job will be executed
 	string cmd = "ssh -X root@10.0.0."+convertInt(idHost);
 	system(cmd.c_str());
