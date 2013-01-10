@@ -39,8 +39,8 @@ int main(int argc, char* argv[]) {
 	
 //	copyAllArchivesToDestination();
 	
-	copyArchivesToDestinationTempFolder("sge_nom_1234567.tar.gz","/tmp/1234567/");
-	connectHostUseSsh(8,"demarre.sh","1234567","sge");
+	copyArchivesToDestinationTempFolder("sge_nom_12.tar.gz","/tmp/12/");
+	connectHostUseSsh(8,"demarre.sh","12","sge");
 
 	/****************
 	 * END
