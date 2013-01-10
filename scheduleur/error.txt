@@ -1,0 +1,5 @@
+sge_nom_LH.tar.gz: No such file or directory
+mkdir: impossible de créer le répertoire «/tmp/LH»: Le fichier existe
+mv: impossible d'évaluer «sge_nom_LH.tar.gz»: Aucun fichier ou dossier de ce type
+Error: Device 51714 (vbd) could not be connected. /home/xen/domains/LH/disk.img does not exist.
+Connection to 10.0.0.8 closed by remote host.

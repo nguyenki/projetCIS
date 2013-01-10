@@ -16,7 +16,7 @@
 #include "scheduler.h"
 using namespace std;
 string copyCmd = "scp ";
-map<string,int> hostJob;
+map<string,int> hostJob; // idJob-idHost
 
 char buf[256];
 char str[256];
@@ -24,32 +24,19 @@ int idHost;
 int idJob;
 string userGroup;
 
-// Command form: ./scheduler userGroup
+// Command form: ./scheduler
 int main(int argc, char* argv[]) {
-//	idHost = randomHost(NUMBER_HOST);
-//	cout << "Host to execute jobs:"<<idHost<<endl;
-//	cout << "IdJob:  "<<idJob<<"    UserGroup:   "<<userGroup<<"\n"<<endl;
-//	connectHostUseSsh(idHost, "ls");
-
 
 	/***********************
 	 * Principle task
 	 ***********************/
+	srand(time(NULL));
 	parseParameter(argc, argv);
-	
 	copyAllArchivesToDestination();
-	
-	//copyArchivesToDestinationTempFolder("sge_nom_12.tar.gz","/tmp/12/");
-	
-	//connectHostUseSsh(8,"demarre.sh","12","sge");
 
 	/****************
 	 * END
 	 ****************/
-	cout<<getIdJob("kim_nomarchives_asf6646116.tar.gz")<<"\n"<<endl;
-	cout<<getUserName("kimddf_nomarchive_asf1asf5a.tar.gz")<<endl;
-	cout <<"Current directory:"<< getCurrentDirectory() <<"\n"<< endl;
-	displayVectorContent(getAllArchivesName(getCurrentDirectory()));
 	return 1;
 }
 
@@ -60,46 +47,69 @@ void connectHostUseSsh(int idHost, const string &commandVM, const string &idJob,
 	system(command.c_str());
 }
 
-// To review:
-
 void copyAllArchivesToDestination() {
-	//string currentD  = getCurrentDirectory();
 	string toScheduler = "/to_schedule/";
 	vector<string> allArchives = getAllArchivesName(toScheduler);
 	for (vector<string>::const_iterator i = allArchives.begin(); i!= allArchives.end(); ++i) {
 		string fileName = *i;
-		string tempsLocation = "/tmp/"+getUserName(userGroup)+"/";
-		//string tempsLocation = "";
+		string tempsLocation = "/tmp/";
 		copyArchivesToDestinationTempFolder(fileName,tempsLocation);
 	}
 }
 
+
 void copyArchivesToDestinationTempFolder(const string &fileName, const string &location) {
-	idHost = randomHost(NUMBER_HOST);
-	idHost = 8;
-	hostJob.insert(std::pair<string,int>(getIdJob(fileName),idHost)); // Save the location of host where the job will be executed
+	idHost = randomHost(MIN_HOST, MAX_HOST);
+	string idJob = getIdJob(fileName);
+	hostJob.insert(std::pair<string,int>(idJob,idHost)); // Save the location of host where the job will be executed
+	string cmdt = "mv /tmp/"+fileName+" /tmp/"+getIdJob(fileName)+".tar.gz";
+
+	string scpCmd = "scp /to_schedule/"+fileName+" root@10.0.0."+convertInt(idHost)+":"+location;
+	system(scpCmd.c_str());
+
 	string cmdk = "mkdir /tmp/"+getIdJob(fileName);
 	string cmd = "ssh -f root@10.0.0."+convertInt(idHost)+ " '"+cmdk+"'";
 	system(cmd.c_str());
-	string scpCmd = "scp "+fileName+" root@10.0.0."+convertInt(idHost)+":"+location;
-	system(scpCmd.c_str());
-	system("exit");
+
+	cmd = "ssh -f root@10.0.0."+convertInt(idHost)+ " '"+cmdt+ "'";
+	system(cmd.c_str());
+
+	cmd = "mv /to_schedule/"+fileName+" /ready/";
+	system(cmd.c_str());
+	connectHostUseSsh(idHost, "demarre.sh", idJob, getUserName(fileName));
+
 }
 
+
 int parseParameter(int argc, char* argv[]) {
-	if (argc<2) {
-		cout << "Usage is: scheduler userGroup\n";
-		exit(0);
-	} else {
-		idJob = atoi(argv[1]);
-		userGroup = argv[1];
+}
+
+
+string getNameUser(const vector<string> archives, const string &idJob) {
+	string temp = "";
+	for (vector<string>::const_iterator it = archives.begin(); it!= archives.end(); ++it) {
+		if (getIdJob(*it).compare(idJob)) {
+			temp = getUserName(*it);
+		}
+	}
+	return temp;
+}
+
+void launchAllJobs() {
+	vector<string> archives = getAllArchivesName("/to_schedule/");
+	for (map<string,int>::const_iterator it = hostJob.begin(); it!= hostJob.end(); it++) {
+		string idJob = (*it).first;
+		int idHost = (*it).second;
+		connectHostUseSsh(idHost, "demarre.sh", idJob, "sge");
+
 	}
 }
-//username_nomarchive_ID.tar.gz
+
+//username_nomarchive_ID.tar.gz string getIdJob(const string &fileName) {
 string getIdJob(const string &fileName) {
 	size_t last_underline = fileName.find_last_of("_");
 	if (last_underline==-1) {
-		cout<<"Erreur archive name." << "_ NOT FOUND" << endl;
+		cout<<"Erreur archive name." << "_ NOT FOUND idJob" << endl;
 		return string("NULL");
 	}
 	string sb = fileName.substr(last_underline,fileName.length());
@@ -109,7 +119,7 @@ string getIdJob(const string &fileName) {
 string getUserName(const string &fileName) {
 	size_t first_underline = fileName.find_first_of("_");
 	if (first_underline==-1) {
-                cout<<"Erreur archive name." << "_ NOT FOUND" << endl;
+                cout<<"Erreur archive name." << "_ NOT FOUND Username" << endl;
 		return string("NULL");
         }
 	return fileName.substr(0,first_underline);
@@ -132,13 +142,12 @@ vector<string> getAllArchivesName(const string &dirPath) {
 		cout << "Error(" << errno << ") opening" << dirPath << endl;
 	} else {
 		while ((drnt=readdir(dp)) != NULL) {
+			string temp = drnt->d_name;
+			if (temp.find("tar")!=-1) {
 				archives.push_back(drnt->d_name);
+			}
 		}
 		closedir(dp);
-	}
-	if (archives.size()>2) {
-		archives.erase(archives.end());
-		archives.erase(archives.end());
 	}
 	return archives;
 }

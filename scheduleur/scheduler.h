@@ -4,8 +4,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#define NUMBER_HOST 7
-// idjobs, hostname
+#define MIN_HOST 7
+#define MAX_HOST 8
 
 using namespace std;
 
@@ -17,6 +17,7 @@ void copyArchivesToDestinationTempFolder(const string &fileName, const string &l
 void copyAllArchivesToDestination();
 string getIdJob(const string &fileName);
 string getUserName(const string &fileName);
+void launchAllJobs();
 
 string convertInt(int number)
 {
@@ -25,17 +26,17 @@ string convertInt(int number)
    return ss.str();//return a string with the contents of the stream
 }
 
-int randomHost(int limit)
+int randomHost(int min, int max)
 {
-	srand(time(NULL)); // seeds the random number generator with the current time
-	int randNum = rand() % limit + 1;
+	int randNum = min+(rand()%(int)(max-min+1));
 	return randNum;
 }
 
-// Test functions
 void displayVectorContent(const vector<string> &list) {
 	cout << "ALL FILE IN CURRENT DIRECTORY:\n"<< endl;
 	for (vector<string>::const_iterator i = list.begin(); i!=list.end(); ++i) {
 		cout << *i << "\n" <<endl;
 	}
 }
+
+

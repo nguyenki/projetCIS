@@ -1,0 +1,26 @@
+ssh -f root@10.0.0.8 'demarre.sh LH sge'
+asf6646116
+
+kimddf
+Current directory:/home/frontend/CIS/projetCIS/scheduleur/
+
+ALL FILE IN CURRENT DIRECTORY:
+
+scheduler.h
+
+..
+
+error.txt
+
+scheduler.cpp
+
+.
+
+idjob: LH
+user: sge
+Copy started at: jeudi 10 janvier 2013, 12:31:50 (UTC+0100)
+Copy termined at: jeudi 10 janvier 2013, 12:32:24 (UTC+0100)
+starting vm
+Using config file "/etc/xen/LH.cfg".
+mac : 00:16:3E:32:EA:AA
+
