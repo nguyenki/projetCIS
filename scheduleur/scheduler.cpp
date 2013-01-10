@@ -37,10 +37,11 @@ int main(int argc, char* argv[]) {
 	 ***********************/
 	parseParameter(argc, argv);
 	
-//	copyAllArchivesToDestination();
+	copyAllArchivesToDestination();
 	
-	copyArchivesToDestinationTempFolder("sge_nom_12.tar.gz","/tmp/12/");
-	connectHostUseSsh(8,"demarre.sh","12","sge");
+	//copyArchivesToDestinationTempFolder("sge_nom_12.tar.gz","/tmp/12/");
+	
+	//connectHostUseSsh(8,"demarre.sh","12","sge");
 
 	/****************
 	 * END
@@ -62,12 +63,13 @@ void connectHostUseSsh(int idHost, const string &commandVM, const string &idJob,
 // To review:
 
 void copyAllArchivesToDestination() {
-	string currentD  = getCurrentDirectory();
-	vector<string> allArchives = getAllArchivesName(currentD);
+	//string currentD  = getCurrentDirectory();
+	string toScheduler = "/to_schedule/";
+	vector<string> allArchives = getAllArchivesName(toScheduler);
 	for (vector<string>::const_iterator i = allArchives.begin(); i!= allArchives.end(); ++i) {
 		string fileName = *i;
-		//string tempsLocation = "/tmp/"+getUserName();
-		string tempsLocation = "";
+		string tempsLocation = "/tmp/"+getUserName(userGroup)+"/";
+		//string tempsLocation = "";
 		copyArchivesToDestinationTempFolder(fileName,tempsLocation);
 	}
 }
@@ -81,6 +83,7 @@ void copyArchivesToDestinationTempFolder(const string &fileName, const string &l
 	system(cmd.c_str());
 	string scpCmd = "scp "+fileName+" root@10.0.0."+convertInt(idHost)+":"+location;
 	system(scpCmd.c_str());
+	system("exit");
 }
 
 int parseParameter(int argc, char* argv[]) {
