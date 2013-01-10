@@ -76,11 +76,9 @@ void copyArchivesToDestinationTempFolder(const string &fileName, const string &l
 	idHost = randomHost(NUMBER_HOST);
 	idHost = 8;
 	hostJob.insert(std::pair<string,int>(getIdJob(fileName),idHost)); // Save the location of host where the job will be executed
-	cmdk = "mkdir /tmp/"+getIdJob(fileName);
+	string cmdk = "mkdir /tmp/"+getIdJob(fileName);
 	string cmd = "ssh -f root@10.0.0."+convertInt(idHost)+ " '"+cmdk+"'";
 	system(cmd.c_str());
-	system(cmd.c_str());
-	system("exit");
 	string scpCmd = "scp "+fileName+" root@10.0.0."+convertInt(idHost)+":"+location;
 	system(scpCmd.c_str());
 }
